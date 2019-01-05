@@ -18,10 +18,10 @@ public class TestController {
     private UserRepository userRepository;
 
     @GetMapping("insertUserByJpa")
-    public void insertUserByJpa(){
-        User user = new User();
-        user.setName("Tom");
-        userRepository.saveAndFlush(user);
+    public Object insertUserByJpa(){
+        User user = userRepository.selectUserByHQL();
+        User user1 = userRepository.selectUserBySQL();
+        return userRepository.selectUser();
     }
 
 
