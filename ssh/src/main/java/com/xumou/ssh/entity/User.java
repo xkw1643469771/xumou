@@ -4,23 +4,28 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Table;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import java.io.Serializable;
+import java.util.List;
 
 /**
  *
  */
 @Entity
-@Table(name = "user")
 public class User implements Serializable{
 
     @Id
-    @SequenceGenerator(name = "seq_user",sequenceName = "seq_user")
-    @GeneratedValue(generator = "seq_user")
+    @GeneratedValue
     private Long id;
-    @Column
+
     private String name;
+    private Short age;
+    private String idCard;
+
+    @ManyToMany
+    private List<Role> roles;
 
     public Long getId() {
         return id;
@@ -36,5 +41,29 @@ public class User implements Serializable{
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Short getAge() {
+        return age;
+    }
+
+    public void setAge(Short age) {
+        this.age = age;
+    }
+
+    public String getIdCard() {
+        return idCard;
+    }
+
+    public void setIdCard(String idCard) {
+        this.idCard = idCard;
+    }
+
+    public List<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(List<Role> roles) {
+        this.roles = roles;
     }
 }

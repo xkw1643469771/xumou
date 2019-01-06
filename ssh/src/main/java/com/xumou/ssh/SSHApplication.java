@@ -3,7 +3,6 @@ package com.xumou.ssh;
 import org.h2.tools.Server;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -17,9 +16,6 @@ import java.sql.SQLException;
 @SpringBootApplication
 @EnableJpaRepositories
 public class SSHApplication {
-
-    @Value("server.port")
-    private static String port;
 
     private static Logger logger = LoggerFactory.getLogger(SSHApplication.class);
 
