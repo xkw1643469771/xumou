@@ -1,0 +1,24 @@
+{
+  "properties": [
+    {
+      "name": "ssh.h2.start-database-manager",
+      "type": "java.lang.Boolean",
+      "sourceType": "com.xumou.ssh.properties.H2DatabaseProperties"
+    }
+  ],
+  "hints": [
+    {
+      "name": "ssh.h2.start-database-manager",
+      "values": [
+        {
+          "value": "true",
+          "description": "start h2 database"
+        },
+        {
+          "value": "false",
+          "description": "not start h2 database"
+        }
+      ]
+    }
+  ]
+}
