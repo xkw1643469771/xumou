@@ -1,4 +1,11 @@
 {
+  "groups" : [
+    {
+      "name": "ssh.h2",
+      "type" : "com.xumou.ssh.properties.H2DatabaseProperties",
+      "sourceType": "com.xumou.ssh.properties.H2DatabaseProperties"
+    }
+  ],
   "properties": [
     {
       "name": "ssh.h2.start-database-manager",
@@ -12,11 +19,7 @@
       "values": [
         {
           "value": "true",
-          "description": "start h2 database"
-        },
-        {
-          "value": "false",
-          "description": "not start h2 database"
+          "description": "\u542f\u52a8\u0048\u0032\u6570\u636e\u5e93\u7ba1\u7406\u5668"
         }
       ]
     }
