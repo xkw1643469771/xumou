@@ -20,6 +20,10 @@
         {
           "value": "true",
           "description": "\u542f\u52a8\u0048\u0032\u6570\u636e\u5e93\u7ba1\u7406\u5668"
+        },
+        {
+          "value": "false",
+          "description": "\u4e0d\u542f\u52a8\u0048\u0032\u6570\u636e\u5e93\u7ba1\u7406\u5668"
         }
       ]
     }
