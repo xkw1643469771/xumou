@@ -1,6 +1,7 @@
 package com.xumou.ssh.service;
 
 import com.xumou.ssh.entity.Role;
+import com.xumou.ssh.entity.User;
 import com.xumou.ssh.repository.RoleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
@@ -12,6 +13,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import javax.persistence.criteria.Subquery;
 import java.util.Arrays;
 
 /**
@@ -60,4 +62,19 @@ public class RoleTestService {
             }
         });
     }
+
+    public Object selectMoreTableBySub() {
+        return roleRepository.findAll(new Specification<Role>() {
+            public Predicate toPredicate(Root<Role> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
+                Subquery<User> userSubquery = query.subquery(User.class);
+                Root<User> userRoot = userSubquery.from(User.class);
+                userSubquery.select(userRoot)
+                        .where(criteriaBuilder.equal(userRoot.get("id"), 1));
+                query.multiselect(userSubquery);
+                return query.where(criteriaBuilder.exists(userSubquery))
+                        .getRestriction();
+            }
+        });
+    }
+
 }

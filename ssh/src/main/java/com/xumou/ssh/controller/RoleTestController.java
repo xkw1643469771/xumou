@@ -40,4 +40,10 @@ public class RoleTestController {
         return roleTestService.selectJoinMoreTable();
     }
 
+    @GetMapping("selectMoreTableBySub")
+    @ApiOperation("多表子查询Exists")
+    public Object selectMoreTableBySub(){
+        return roleTestService.selectMoreTableBySub();
+    }
+
 }
