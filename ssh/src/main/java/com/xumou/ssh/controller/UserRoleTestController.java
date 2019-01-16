@@ -4,14 +4,23 @@ import com.xumou.ssh.entity.Role;
 import com.xumou.ssh.entity.User;
 import com.xumou.ssh.repository.RoleRepository;
 import com.xumou.ssh.repository.UserRepository;
+import com.xumou.ssh.service.UserRoleTestService;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Expression;
+import javax.persistence.criteria.Join;
+import javax.persistence.criteria.JoinType;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
@@ -28,6 +37,8 @@ public class UserRoleTestController {
     private UserRepository userRepository;
     @Autowired
     private RoleRepository roleRepository;
+    @Autowired
+    private UserRoleTestService userRoleTestService;
 
     @GetMapping("insertUserByJpa")
     public Object insertUserByJpa(){
@@ -130,4 +141,24 @@ public class UserRoleTestController {
         return one.getId()+" "+one.getName();
     }
 
+    @ApiOperation("测试业务层jpa")
+    @GetMapping("testService")
+    public Object testService(){
+        userRoleTestService.testService();
+        return "";
+    }
+
+
+    @ApiOperation("测试 JpaSpecificationExecutor 接口")
+    @GetMapping("testJpaSpecificationExecutor")
+    public Object testJpaSpecificationExecutor(){
+        return roleRepository.findAll(new Specification<Role>() {
+            public Predicate toPredicate(Root<Role> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
+                Expression<Long> x = root.join("users", JoinType.LEFT).get("id").as(Long.class);
+                Predicate leftJoinUser = criteriaBuilder.equal(x, "");
+                Predicate in = root.get("id").in(1, 2);
+                return criteriaBuilder.and(leftJoinUser, in);
+            }
+        });
+    }
 }

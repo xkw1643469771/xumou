@@ -36,5 +36,18 @@ public class H2DatabaseController {
 		h2DatabaseService.batchInsertByJdbcTemplate();
 		return "插入成功";
 	}
-	
+
+	@ApiOperation("测试大批量插入性能通过save异步插入")
+	@GetMapping("batchInsertAsync")
+	public Object batchInsertAsync(){
+		h2DatabaseService.batchInsertAsync();
+		return "插入成功";
+	}
+
+	@ApiOperation("测试大批量插入性能通过saveAll异步插入")
+	@GetMapping("batchInsertAsyncByList")
+	public Object batchInsertAsyncByList(){
+		h2DatabaseService.batchInsertAsyncByList();
+		return "插入成功";
+	}
 }

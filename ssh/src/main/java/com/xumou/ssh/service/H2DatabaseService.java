@@ -3,10 +3,12 @@ package com.xumou.ssh.service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.Semaphore;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,6 +23,8 @@ public class H2DatabaseService {
 	
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+	private H2DatabaseService self;
     
     /** 测试批量插入save */
     public void batchInsert(){
@@ -76,5 +80,68 @@ public class H2DatabaseService {
     	userRepository.flush();
     	logger.info("数据全部插入");
     }
+
+	/** 使用save方法异步插入1千万条数据 */
+	public void batchInsertAsync() {
+		Random r = new Random();
+		// 信号器, 用于控制线程数
+		Semaphore semaphore = new Semaphore(10);
+		for (int i = 0; i < 10000*1000; i++) {
+			User user = new User();
+			user.setName(String.valueOf(r.nextInt()));
+			user.setIdCard(String.valueOf(r.nextLong()));
+			user.setAge((short)r.nextInt());
+			// 获取一个信号
+			semaphore.acquireUninterruptibly();
+			self.saveUser(user, semaphore);
+			if(i % 1000 == 0){
+				logger.info("已插入: " + i);
+			}
+		}
+		logger.info("数据全部插入");
+	}
+
+	/** 使用saveAll方法异步插入1千万条数据 */
+	public void batchInsertAsyncByList() {
+		Random r = new Random();
+		// 信号器, 用于控制线程数
+		Semaphore semaphore = new Semaphore(10);
+		List<User> users = new ArrayList<>();
+		for (int i = 0; i < 10000*1000; i++) {
+			User user = new User();
+			user.setName(String.valueOf(r.nextInt()));
+			user.setIdCard(String.valueOf(r.nextLong()));
+			user.setAge((short)r.nextInt());
+			users.add(user);
+			if(i % 1000 == 0){
+				// 获取一个信号
+				semaphore.acquireUninterruptibly();
+				self.saveUserList(users, semaphore);
+				users = new ArrayList<>();
+				logger.info("已插入: " + i);
+			}
+		}
+		logger.info("数据全部插入");
+	}
+
+	@Async
+	public void saveUser(User user, Semaphore semaphore) {
+		try{
+			userRepository.save(user);
+		}finally {
+			// 释放信号
+			semaphore.release();
+		}
+	}
+
+	@Async
+	public void saveUserList(List<User> users, Semaphore semaphore) {
+		try{
+			userRepository.saveAll(users);
+		}finally {
+			// 释放信号
+			semaphore.release();
+		}
+	}
 
 }
