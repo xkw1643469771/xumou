@@ -32,6 +32,7 @@ public class UserTestService {
     public void updateUserTestTrans() throws Exception{
         long id = 11901670;
         for (int i = 0; i < 4; i++) {
+            // updateUserOne 有单独的事务, 即便是这里报异常也不会被影响
             self.updateUserOne(id ++);
             if(i == 3)
                 throw new Exception();
@@ -39,7 +40,7 @@ public class UserTestService {
         throw new Exception();
     }
 
-    //@Transactional(propagation = Propagation.REQUIRES_NEW)
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void updateUserOne(long id){
         User one = userRepository.getOne(id);
         Random r = new Random();
