@@ -1,5 +1,6 @@
 package com.xumou.ssh.service;
 
+import com.xumou.ssh.annotation.MethodInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -24,6 +25,7 @@ public class UserTestService {
     private UserTestService self;
 
     @MethodTimer
+    @MethodInfo(time = true, param = true)
     public Object selectUserByParam(User user) {
         return userRepository.selectUserByParam(user.getId());
     }

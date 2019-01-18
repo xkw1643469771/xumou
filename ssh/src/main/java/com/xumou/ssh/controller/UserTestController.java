@@ -1,5 +1,6 @@
 package com.xumou.ssh.controller;
 
+import com.xumou.ssh.annotation.MethodTimer;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -17,7 +18,7 @@ import com.xumou.ssh.service.UserTestService;
 /**
  *
  */
-@Api(value = "用户操作")
+@Api(value = "用户操作", tags = {"说明"})
 @RestController
 @RequestMapping("userTest")
 public class UserTestController {
@@ -33,6 +34,7 @@ public class UserTestController {
 
     @ApiOperation("在事务中嵌套事务")
     @GetMapping("updateUserTestTrans")
+    @MethodTimer
     public void updateUserTestTrans() throws Exception{
         userTestService.updateUserTestTrans();
     }

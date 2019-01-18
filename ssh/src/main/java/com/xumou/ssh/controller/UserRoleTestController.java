@@ -1,5 +1,6 @@
 package com.xumou.ssh.controller;
 
+import com.xumou.ssh.annotation.MethodInfo;
 import com.xumou.ssh.entity.Role;
 import com.xumou.ssh.entity.User;
 import com.xumou.ssh.repository.RoleRepository;
@@ -57,6 +58,7 @@ public class UserRoleTestController {
     })
     @ApiOperation("插入角色, 如果有用户id, 则关联")
     @GetMapping("insertRole")
+    @MethodInfo(param = true, time = true)
     public Object insertRole(String name, Long[] userIds){
         Role role = new Role();
         role.setName(name);
