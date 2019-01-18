@@ -1,4 +1,4 @@
-package com.xumou.test.proxy;
+package com.xumou.test.pattern.proxy;
 
 import org.junit.Test;
 import org.springframework.cglib.proxy.Enhancer;
@@ -11,10 +11,10 @@ import java.lang.reflect.Method;
 /**
  *
  */
-public class CGLibTest {
+public class CGLibProxyTest {
 
     /**
-     * 通过CGLib代理, 属于代理模式
+     * 通过CGLib代理, 只有一个子类对象, 多态
      */
     @Test
     public void cjlibTest() throws IOException {
@@ -32,7 +32,7 @@ public class CGLibTest {
     }
 
     /**
-     * 模拟AOP代理, 属于包装模式
+     * 模拟AOP代理, 一个子类对象和一个实际对象, 代理
      */
     @Test
     public void cjlibAopTest() throws IOException {
