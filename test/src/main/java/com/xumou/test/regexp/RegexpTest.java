@@ -44,6 +44,18 @@ public class RegexpTest {
         return sb.toString();
     }
 
+    //测试时间
+    @Test
+    public void executeTimer() throws IOException {
+        long s1 = System.currentTimeMillis();
+        test2();
+        long s2 = System.currentTimeMillis();
+        System.out.println(count);
+        System.out.println(s2-s1);
+    }
+
+    //===========================================================================================
+
     /**
      * 根据正则表达式获取文本中唯一号
      */
@@ -77,16 +89,6 @@ public class RegexpTest {
                     System.out.println(matcher.group());
             }
         }
-    }
-
-    //测试时间
-    @Test
-    public void executeTimer() throws IOException {
-        long s1 = System.currentTimeMillis();
-        test2();
-        long s2 = System.currentTimeMillis();
-        System.out.println(count);
-        System.out.println(s2-s1);
     }
 
 }
