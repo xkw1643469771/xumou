@@ -4,7 +4,7 @@ const jsdom = require("jsdom");
 
 
 // sonar
- sonarParse();
+sonarParse();
 function sonarParse(){
     // 拼接请求路径
     var url = "http://10.0.75.154:19000/api/issues/search?s=FILE_LINE";
@@ -16,31 +16,36 @@ function sonarParse(){
     url += "&p=1";
     url += "&additionalFields=_all";
     // 发送请求
-    request( url,function(err,resp,body){
-        var result = toJson(body);
-        var getDesc = initDesc();
-        var getAuthor = initAuthor();
-        var issues = result.issues;
-        for(var i = 0; i < issues.length; i++){
-            var item = issues[i];
-            var javaName = item.component.substring(item.component.lastIndexOf("/")+1);
-            var line = item.line ? item.line : "-1";
-            var enMsg = item.message;
-            var zhMsg = getDesc(enMsg);
-            var author = getAuthor(item.author);
-            //console.info((i+1) + "\t" + javaName + "\t" + line + "\t" + enMsg + "\t" + zhMsg)
-            console.info(author)
+    request(
+        url,
+        {
+            method : "GET",
+            json : true, // 响应JSON
+        },
+        function(err,resp,body){
+            chechError(body);
+            var getDesc = initDesc();
+            var getAuthor = initAuthor();
+            var issues = body.issues;
+            for(var i = 0; i < issues.length; i++){
+                var item = issues[i];
+                var javaName = item.component.substring(item.component.lastIndexOf("/")+1);
+                var line = item.line ? item.line : "-1";
+                var enMsg = item.message;
+                var zhMsg = getDesc(enMsg);
+                var author = getAuthor(item.author);
+                //console.info((i+1) + "\t" + javaName + "\t" + line + "\t" + enMsg + "\t" + zhMsg)
+                console.info(author)
+            }
         }
-    });
-    // 将文本解析为json, 同时判断是否报错
-    function toJson(str){
-        var result = eval("(" + str + ")");
+    );
+    // 判断返回是否报错
+    function chechError(result){
         if(result.errors != undefined && result.errors != null){
             for(var i = 0;i<result.errors.length;i++){
                 throw new Error(result.errors[i].msg);
             }
         }
-        return result;
     }
     // 描述翻译
     function initDesc(){
