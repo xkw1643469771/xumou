@@ -1,5 +1,9 @@
-package com.xumou.test.weblogin;
+package com.xumou.test.web;
 
+import com.xumou.test.utils.IOUtils;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 import org.junit.Test;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -17,6 +21,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.function.Consumer;
 
 /**
  *
@@ -127,4 +132,29 @@ public class RestTemplateTest {
         ResponseEntity<String> responseEntity = restTemplate.exchange(url, HttpMethod.GET, httpEntity, String.class);
         System.out.println(responseEntity.getBody());
     }
+
+    /**
+     * 使用JSoup解析html
+     */
+    @Test
+    public void test(){
+        String url = "https://www.baidu.com/";
+        String result = restTemplate.execute(url, HttpMethod.GET, null, new ResponseExtractor<String>() {
+            public String extractData(ClientHttpResponse response) throws IOException {
+                return IOUtils.readStrUTF8(response.getBody());
+            }
+        });
+        Document doc = Jsoup.parse(result);
+        // 获取非引入的脚本
+        doc.select("script").forEach(new Consumer<Element>() {
+            public void accept(Element element) {
+                if(element.hasAttr("src")){
+
+                }else{
+                    System.out.println(element);
+                }
+            }
+        });
+    }
+
 }
