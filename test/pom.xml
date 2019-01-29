@@ -41,6 +41,14 @@
             <version>1.8.3</version>
         </dependency>
 
+        <!-- qrcode 二维码 -->
+        <dependency>
+            <groupId>com.google.zxing</groupId>
+            <artifactId>javase</artifactId>
+            <version>3.2.1</version>
+        </dependency>
+
+
 
         <!-- 热部署工具 -->
         <dependency>

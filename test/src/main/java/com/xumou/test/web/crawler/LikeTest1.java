@@ -14,8 +14,7 @@ import org.springframework.web.client.ResponseExtractor;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
-import java.net.URLEncoder;
-import java.util.function.Consumer;
+import java.util.regex.Pattern;
 
 /**
  *
@@ -23,18 +22,45 @@ import java.util.function.Consumer;
 public class LikeTest1 {
 
     RestTemplate restTemplate = new RestTemplate();
+    Pattern number = Pattern.compile("[\\w]+");
+    String url = "http://www.bteat.com";
 
     /**
      * 使用JSoup解析html
      */
     @Test
     public void test1(){
-        String url = "http://www.bteat.com";
-        Document doc = getForString(url);
-        String searchUrl = url + doc.select("form").attr("action");
-        searchUrl += "?kw="+ URLEncoder.encode("");
-        Document searchDoc = getForString(searchUrl);
-        System.out.println(searchDoc);
+        String search = "冷";
+        int sum = 0;
+        for (int i = 0; i < Integer.MAX_VALUE; i++) {
+            String searchUrl = url + "/search/" + search + "-first-asc-"+(i+1);
+            Document searchDoc = getForString(searchUrl);
+            int count = parseHtml(searchDoc);
+            sum += count;
+            if(count == 0){
+                break;
+            }
+        }
+        System.out.println(sum);
+    }
+
+    public int parseHtml(Document searchDoc){
+        int count = 0;
+        for (Element el : searchDoc.select("a")) {
+            String href = el.attr("href");
+            if(href.contains("magnet")){
+                String name = el.parent().parent().select(".item-list").text();
+                System.out.println(name);
+                System.out.println("\t\t"+href);
+                count ++;
+            }
+        }
+        return count;
+    }
+
+    @Test
+    public void tet2(){
+        System.out.println(Pattern.matches("","<a href=\"/search/苍-first-asc-5\">5</a>"));
     }
 
     public Document getForString(String url){
