@@ -1,4 +1,4 @@
-package com.xumou.test.weblogin.train;
+package com.xumou.test.web.train;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
