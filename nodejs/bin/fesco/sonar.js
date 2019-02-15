@@ -36,7 +36,7 @@ function sonarParse(p, idx){
                 var author = getAuthor(item.author);
                 idx++;
                 //if(enMsg == zhMsg)
-                    console.info(idx + "\t" + javaName + "\t" + line + "\t" + author + "\t" + enMsg + "\t" + zhMsg)
+                console.info(idx + "\t" + javaName + "\t" + line + "\t" + author + "\t" + enMsg + "\t" + zhMsg)
                 //console.info(author)
             }
             if(issues.length > 0){
@@ -172,7 +172,7 @@ function getRequest(){
     )
 }
 
-function issuesOpt(){
+(function issuesOpt(){
     // ajax同步加载js
     function loadRemoteJs(url){
         var xmlhttp;
@@ -197,7 +197,27 @@ function issuesOpt(){
             clearInterval(timer123);
         }
     },1000);
-    $(".concise-issue-box")[0].click();
-    // 滚动到指定位置
-    $(".layout-page-side")[0].scrollTop = $(".concise-issue-box")[100].offsetTop - 200;
-}
+    (function(){
+        var html =
+            '<div style="position: fixed; left: 0px; top: 50px; z-index: 10000">' +
+            '   <input type="text" id="sea3432" style="width: 120px;" id="s1234"><br>' +
+            '   <input type="button" id="sea123123" value="序号"><br>' +
+            '   <input type="button" id="sea123124" value="隐藏">' +
+            '   <input type="button" id="sea123125" value="显示"><br>' +
+            '</div>';
+        $(".navbar-inner").after(html);
+    })()
+    $("#sea123123").click(function(){
+        $(".concise-issue-box")[$("#sea3432").val()-1].click();
+    });
+    $("#sea123124").click(function(){
+        $(".concise-issue-box-message").each(function(i,e){
+            if($(e).text().indexOf($("#sea3432").val()) < 0){
+                $(e).parent().parent().hide();
+            }
+        });
+    });
+    $("#sea123125").click(function(){
+        $(".concise-issue-box-message").parent().parent().show();
+    });
+})
