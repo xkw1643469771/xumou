@@ -4,16 +4,16 @@ const jsdom = require("jsdom");
 
 
 // sonar
-sonarParse();
-function sonarParse(){
+sonarParse(1,0);
+function sonarParse(p, idx){
     // 拼接请求路径
     var url = "http://10.0.75.154:19000/api/issues/search?s=FILE_LINE";
     url += "&authors=houruikai,liuli,liyemin,xuxiaogang,yuyueting";
-    url += "&createdAfter=2018-12-01";
-    url += "&createdBefore=2019-01-22";
+    url += "&createdAfter=2019-01-23";
+    url += "&createdBefore=2019-02-01";
     url += "&severities=BLOCKER,CRITICAL,MAJOR"; // 阻断 BLOCKER 危险 CRITICAL 重要 MAJOR
-    url += "&ps=500";
-    url += "&p=1";
+    url += "&ps=100";
+    url += "&p=" + p;
     url += "&additionalFields=_all";
     // 发送请求
     request(
@@ -34,8 +34,13 @@ function sonarParse(){
                 var enMsg = item.message;
                 var zhMsg = getDesc(enMsg);
                 var author = getAuthor(item.author);
-                //console.info((i+1) + "\t" + javaName + "\t" + line + "\t" + enMsg + "\t" + zhMsg)
-                console.info(author)
+                idx++;
+                //if(enMsg == zhMsg)
+                    console.info(idx + "\t" + javaName + "\t" + line + "\t" + author + "\t" + enMsg + "\t" + zhMsg)
+                //console.info(author)
+            }
+            if(issues.length > 0){
+                sonarParse(p + 1, idx);
             }
         }
     );
@@ -77,7 +82,12 @@ function sonarParse(){
         arr["Reduce the number of returns of this method"] = "方法返回的数字为0-3";
         arr["A \"NullPointerException\" could be thrown;"] = "可以抛空指针异常";
         arr["Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation"] = "方法是空的";
-        //arr["xxx"] = "xxx";
+        arr["Remove this unused "] = "移除不使用的字段";
+        arr["Merge this if statement with the enclosing one"] = "将if与后面的if合并";
+        arr["Remove this useless assignment to local variable"] = "删除对局部变量的无效赋值";
+        arr["This branch's code block is the same as the block for the branch on line "] = "代码块相同, 代码重复";
+        arr["Use try-with-resources or close this"] = "关闭资源";
+        arr["xxx"] = "xxx";
         return function(str){
             for(var key in arr){
                 if(str.indexOf(key) > -1){

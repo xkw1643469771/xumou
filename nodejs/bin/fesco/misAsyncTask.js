@@ -1,8 +1,24 @@
 const http = require("http");
 const querystring = require("querystring");
 const request = require("request");
+const fs = require("fs");
 
+// 读取文件内容, 一次读完
+(function(){
+    fs.readFile("./misAsyncTask.json",function(err,data){
+        console.info(err,data);
+    });
+})
 
+// 读取文件内容, 一次读取一部分
+(function(){
+    var buf = Buffer.alloc(1024);
+    fs.open("./misAsyncTask.json","r",function(fe,fd){
+        fs.read(fd, buf, 0, buf.length, 0, function(readErr, readLen){
+            console.log(buf.slice(0,readLen).toString());
+        });
+    });
+})
 
 //asyncByHttpPost();
 function asyncByHttpPost(){
