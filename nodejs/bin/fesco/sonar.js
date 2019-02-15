@@ -172,3 +172,32 @@ function getRequest(){
     )
 }
 
+function issuesOpt(){
+    // ajax同步加载js
+    function loadRemoteJs(url){
+        var xmlhttp;
+        if (window.XMLHttpRequest) {
+            xmlhttp=new XMLHttpRequest();
+        }else{
+            xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+        }
+        xmlhttp.onreadystatechange=function(){
+            if (xmlhttp.readyState==4 && xmlhttp.status==200){
+                eval(xmlhttp.responseText);
+            }
+        }
+        xmlhttp.open("GET",url, false);//false同步, true异步
+        xmlhttp.send();
+    }
+    loadRemoteJs("https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js");
+    var timer123 = setInterval(function(){
+        try{
+            $("a.spacer-left")[0].click();
+        }catch (e){
+            clearInterval(timer123);
+        }
+    },1000);
+    $(".concise-issue-box")[0].click();
+    // 滚动到指定位置
+    $(".layout-page-side")[0].scrollTop = $(".concise-issue-box")[100].offsetTop - 200;
+}
