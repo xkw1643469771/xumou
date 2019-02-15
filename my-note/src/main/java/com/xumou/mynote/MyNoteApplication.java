@@ -6,9 +6,8 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.web.client.RestTemplate;
 
 import java.awt.Desktop;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
 import java.util.Properties;
 
@@ -25,12 +24,11 @@ public class MyNoteApplication {
     public static Desktop desktop;
 
     static{
-        FileInputStream fis = null;
+        InputStream inputStream = null;
         try {
-            File file = new File(ClassLoader.getSystemClassLoader().getResource("").getPath());
-            fis = new FileInputStream(new File(file, "application.properties"));
+            inputStream =  MyNoteApplication.class.getResourceAsStream("/application.properties");
             Properties properties = new Properties();
-            properties.load(fis);
+            properties.load(inputStream);
             port = Integer.valueOf(properties.getProperty("server.port"));
             restTemplate = new RestTemplate();
             url = "http://localhost:" + port;
@@ -44,10 +42,10 @@ public class MyNoteApplication {
             throw new RuntimeException(e);
         } finally {
             try {
-                if(fis != null)
-                    fis.close();
+                if(inputStream != null)
+                    inputStream.close();
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                e.printStackTrace();
             }
         }
     }
