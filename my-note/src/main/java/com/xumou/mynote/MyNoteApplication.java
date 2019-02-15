@@ -1,6 +1,5 @@
 package com.xumou.mynote;
 
-import org.hibernate.boot.jaxb.SourceType;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
@@ -11,8 +10,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.Properties;
 
 /**
@@ -57,9 +54,7 @@ public class MyNoteApplication {
 
     private static boolean hasNotStarted() {
         try{
-            Boolean isStart = restTemplate.postForObject(url + "/note/isStart", null, Boolean.class);
-            System.out.println(isStart);
-            return !isStart;
+            return !restTemplate.postForObject(url + "/note/isStart", null, Boolean.class);
         }catch (Exception e){
             return true;
         }
@@ -76,7 +71,6 @@ public class MyNoteApplication {
 
     public static void main(String[] args) {
         if(hasNotStarted()){
-            System.out.println("==============================");
             SpringApplication.run(MyNoteApplication.class, args);
         }
         gotoHome();
