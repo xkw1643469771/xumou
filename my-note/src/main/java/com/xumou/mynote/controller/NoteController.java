@@ -21,9 +21,8 @@ public class NoteController {
     }
 
     @GetMapping
-    @ResponseBody
     public String a(){
-        return "success";
+        return "/html/index.html";
     }
 
 }

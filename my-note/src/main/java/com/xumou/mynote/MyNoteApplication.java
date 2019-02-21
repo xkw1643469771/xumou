@@ -1,5 +1,8 @@
 package com.xumou.mynote;
 
+import org.h2.tools.Server;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
@@ -9,6 +12,7 @@ import java.awt.Desktop;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
+import java.sql.SQLException;
 import java.util.Properties;
 
 /**
@@ -22,6 +26,7 @@ public class MyNoteApplication {
     public static RestTemplate restTemplate;
     public static String url;
     public static Desktop desktop;
+    private static Logger logger = LoggerFactory.getLogger(MyNoteApplication.class);
 
     static{
         InputStream inputStream = null;
@@ -67,9 +72,15 @@ public class MyNoteApplication {
         }
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws SQLException {
         if(hasNotStarted()){
             SpringApplication.run(MyNoteApplication.class, args);
+            try {
+                Server.createWebServer("-webPort", String.valueOf(port + 10000)).start();
+                logger.info("http://localhost:" + String.valueOf(port + 10000));
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
         gotoHome();
     }

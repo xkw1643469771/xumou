@@ -3,24 +3,24 @@ package com.xumou.mynote.entity;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
+import javax.persistence.Table;
 
 /**
  *
  */
 @Entity
+@Table(indexes = {@Index(name = "idx_pid", columnList = "pid")})
 public class NoteText {
 
     @Id
     @GeneratedValue
     private Long id;
     private String text;
-    private Long pid;
 
-    @OneToOne
-    @JoinColumn(name = "pid", referencedColumnName = "id")
-    private NoteText parent;
+    private Long pid;
 
     public Long getId() {
         return id;
@@ -38,19 +38,4 @@ public class NoteText {
         this.text = text;
     }
 
-    public Long getPid() {
-        return pid;
-    }
-
-    public void setPid(Long pid) {
-        this.pid = pid;
-    }
-
-    public NoteText getParent() {
-        return parent;
-    }
-
-    public void setParent(NoteText parent) {
-        this.parent = parent;
-    }
 }
