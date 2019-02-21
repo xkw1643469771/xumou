@@ -28,9 +28,11 @@ public class SSMApplication {
 
     private static void startH2DatabaseManager(ConfigurableApplicationContext context) {
         try {
-            int port = 10000 + Integer.valueOf(context.getEnvironment().getProperty("server.port"));
-            Server.createWebServer("-webPort", String.valueOf(port)).start();
-            logger.info("http://localhost:" + port);
+            int port = Integer.valueOf(context.getEnvironment().getProperty("server.port"));
+            int dbPort = 10000 + port;
+            Server.createWebServer("-webPort", String.valueOf(dbPort)).start();
+            logger.info("Project url : http://localhost:" + port);
+            logger.info("Database url : http://localhost:" + dbPort);
         } catch (SQLException e) {}
     }
 
