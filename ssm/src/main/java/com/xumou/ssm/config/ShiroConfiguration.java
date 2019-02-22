@@ -14,6 +14,7 @@ import org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSource
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
+import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -26,6 +27,15 @@ import java.util.Map;
 @Configuration
 public class ShiroConfiguration {
 
+    // 开启代理模式. 不然不能使用注解管理权限
+    @Bean
+    public DefaultAdvisorAutoProxyCreator getDefaultAdvisorAutoProxyCreator() {
+        DefaultAdvisorAutoProxyCreator autoProxyCreator = new DefaultAdvisorAutoProxyCreator();
+        autoProxyCreator.setProxyTargetClass(true);
+        return autoProxyCreator;
+    }
+
+    // 凭证管理器, 用于散列前端传递过来的密码
     @Bean
     public HashedCredentialsMatcher hashedCredentialsMatcher(){
         HashedCredentialsMatcher hashedCredentialsMatcher = new HashedCredentialsMatcher();
@@ -41,6 +51,7 @@ public class ShiroConfiguration {
         return myRealm;
     }
 
+    // 安全管理器
     @Bean
     public SecurityManager securityManager(MyRealm myRealm){
         DefaultWebSecurityManager securityManager = new DefaultWebSecurityManager();
@@ -48,6 +59,7 @@ public class ShiroConfiguration {
         return securityManager;
     }
 
+    // 详细配置
     @Bean
     public ShiroFilterFactoryBean shiroFilterFactoryBean(SecurityManager securityManager){
         ShiroFilterFactoryBean shiroFilterFactoryBean = new ShiroFilterFactoryBean();
@@ -64,6 +76,7 @@ public class ShiroConfiguration {
         return shiroFilterFactoryBean;
     }
 
+    // 权限注解支持
     @Bean
     public AuthorizationAttributeSourceAdvisor authorizationAttributeSourceAdvisor(SecurityManager securityManager){
         AuthorizationAttributeSourceAdvisor advisor = new AuthorizationAttributeSourceAdvisor();
@@ -71,12 +84,13 @@ public class ShiroConfiguration {
         return advisor;
     }
 
+    // 自定义Realm
     private static class MyRealm extends AuthorizingRealm {
 
         @Override
         protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principalCollection) {
             SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
-            info.addStringPermission("123");
+            info.addStringPermission("test");
             return info;
         }
 
