@@ -5,10 +5,13 @@ import java.util.Arrays;
 public class HeapSort {
 
     public static void main(String[] args) {
-        int[] is = new int[32];
+        int[] is = new int[10000*100];
         for (int i = 0; i < is.length; i++)
-            is[i] = (int)(Math.random()*100);
+            is[i] = (int)(Math.random()*is.length);
+        long s1 = System.currentTimeMillis();
         heapSort(is);
+        long s2 = System.currentTimeMillis();
+        System.out.println(s2-s1);
         System.out.println(Arrays.toString(is));
     }
 
