@@ -1,23 +1,19 @@
 package com.xumou.test.struct.sort;
 
-import java.util.Arrays;
 
-public class InsertSort {
+public class InsertSort extends AbstractSort {
 
-    public static void main(String[] args) {
-        int[] is = new int[100000];
-        for (int i = 0; i < is.length; i++)
-            is[i] = (int)(Math.random()*is.length);
-        long s1 = System.currentTimeMillis();
-        insertSort(is);
-        long s2 = System.currentTimeMillis();
-        System.out.println(s2-s1);
-        System.out.println(Arrays.toString(is));
-    }
+	public static void main(String[] args) {
+		new InsertSort().start(10000*10);
+	}
 
-    private static void insertSort(int[] is) {
-        for (int i = 1; i < is.length; i++) {
-            for (int j = i; j > 0; j--) {
+	public void insertSort(int[] is) {
+		insertSort(is, 0, is.length - 1);
+	}
+	
+	public void insertSort(int[] is, int start, int end){
+        for (int i = start + 1; i <= end ; i++) {
+            for (int j = i; j > start; j--) {
                 if(is[j] < is[j-1]){
                     swap(is, j, j-1);
                 }else{
@@ -27,12 +23,9 @@ public class InsertSort {
         }
     }
 
-
-    private static void swap(int[] is, int i, int j) {
-        int temp = is[i];
-        is[i] = is[j];
-        is[j] = temp;
-    }
-
+	@Override
+	protected void sort(int[] is) {
+		insertSort(is);
+	}
 
 }
