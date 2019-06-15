@@ -26,7 +26,7 @@ public class HttpServer {
 
     static {
         try {
-            threadPool = Executors.newFixedThreadPool(4);
+            threadPool = Executors.newFixedThreadPool(16);
             server = ServerSocketChannel.open();
             server.configureBlocking(false);
             server.bind(new InetSocketAddress(8888));
@@ -36,13 +36,6 @@ public class HttpServer {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    private static void accept() throws IOException {
-        System.out.println("===========================监听================================");
-        SocketChannel sc = server.accept();
-        sc.configureBlocking(false);
-        sc.register(selector, SelectionKey.OP_READ);
     }
 
     public static void main(String[] args) throws IOException {
@@ -81,9 +74,20 @@ public class HttpServer {
         }
     }
 
+    private static void accept() throws IOException {
+        //System.out.println("===========================监听================================");
+        SocketChannel sc = server.accept();
+        System.out.println("监听" + sc);
+        sc.configureBlocking(false);
+        sc.register(selector, SelectionKey.OP_READ);
+    }
+
+
+
     private static void write(SelectionKey key) throws IOException {
-        System.out.println("===========================写出================================");
+        //System.out.println("===========================写出================================");
         SocketChannel sc = (SocketChannel) key.channel();
+        System.out.println("写出" + sc);
         sc.configureBlocking(false);
         String str = "HTTP/1.1 200 OK\n" +
                 "Content-Type: application/json;charset=utf-8\n\n"+
@@ -94,36 +98,65 @@ public class HttpServer {
     }
 
     private static void read(SelectionKey key) throws IOException {
-        System.out.println("===========================读取================================");
+        //System.out.println("===========================读取================================");
         SocketChannel sc = (SocketChannel) key.channel();
-        ByteBuffer byteBuffer = ByteBuffer.allocate(64);
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        while (true) {
-            int len = sc.read(byteBuffer);
-            if (len == -1) {
-                sc.close();
-                System.out.println("关闭的通道");
-                return;
-            }
-            if (len == 0) {
-                break;
-            }
-            byteBuffer.flip();
-            bos.write(byteBuffer.array(), 0, byteBuffer.limit());
-            byteBuffer.clear();
-        }
-        byte[] bytes = bos.toByteArray();
-        if (bytes.length > 0) {
-            threadPool.execute(() -> {
-                try {
-                    System.out.println(new String(bytes));
-                    Thread.sleep(10000);
-                    sc.configureBlocking(false);
-                    sc.register(selector, SelectionKey.OP_WRITE);
-                } catch (Exception e) {
-                    e.printStackTrace();
+        sc.configureBlocking(false);
+        readSc(sc);
+        threadPool.execute(() -> {
+            try {
+                StringBuilder sb = new StringBuilder();
+                sb.append("123 ");
+                sb.append("HTTP/1.1 200 OK").append("\n");
+                sb.append("Content-Type: application/json;charset=utf-8").append("\n");
+                sb.append("\n");
+                ByteBuffer src = ByteBuffer.wrap(sb.toString().getBytes());
+                sc.write(src);
+                sc.write(ByteBuffer.wrap(objectMapper.writeValueAsString(Math.random()).getBytes()));
+                for (int i = 0; i < 20; i++) {
+                    sleep(1000);
+                    System.out.println(Thread.currentThread());
+                    sc.write(ByteBuffer.wrap(("\n"+objectMapper.writeValueAsString(Math.random())).getBytes()));
                 }
-            });
+                sc.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+    }
+
+    private static boolean readSc(SocketChannel sc) throws IOException {
+        try {
+            ByteBuffer byteBuffer = ByteBuffer.allocate(64);
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            while (true) {
+                int len = sc.read(byteBuffer);
+                if (len == -1) {
+                    sc.close();
+                    //System.out.println("关闭的通道");
+                    return false;
+                }
+                if (len == 0) {
+                    break;
+                }
+                byteBuffer.flip();
+                bos.write(byteBuffer.array(), 0, byteBuffer.limit());
+                byteBuffer.clear();
+            }
+            byte[] bytes = bos.toByteArray();
+            System.out.println(new String(bytes));
+            return bytes.length > 0;
+        }catch (Exception e){
+            sc.close();
+            throw e;
         }
     }
+
+    public static void sleep(long l){
+        try {
+            Thread.sleep(l);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
 }
